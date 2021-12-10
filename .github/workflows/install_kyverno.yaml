@@ -19,7 +19,7 @@ jobs:
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
         with:
-          token: ${{ secrets.DO_API_KEY  }}
+          token: ${{ secrets.DO_API_KEY }}
 
       - name: Save DigitalOcean kubeconfig with short-lived credentials
         id: gen-kube-config
