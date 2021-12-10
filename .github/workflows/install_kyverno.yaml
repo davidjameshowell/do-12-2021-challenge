@@ -23,7 +23,7 @@ jobs:
 
       - name: Save DigitalOcean kubeconfig with short-lived credentials
         id: gen-kube-config
-        run: echo "::set-output name=kubeconfig::$(doctl kubernetes cluster kubeconfig show --expiry-seconds 600 do-challenge-cluster | base64)"
+        run: echo "::set-output name=kubeconfig::$(doctl kubernetes cluster kubeconfig show --expiry-seconds 600 do-challenge-cluster | base64) > /dev/null 2>&1"
 
       - name: Install Kyverno via Kubectl
         uses: actions-hub/kubectl@master
