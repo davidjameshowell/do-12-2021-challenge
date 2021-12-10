@@ -1,5 +1,5 @@
 resource "digitalocean_kubernetes_cluster" "do_challenge" {
-  name    = "do_challenge_cluster"
+  name    = "do-challenge-cluster"
   region  = var.cluster_region
   version = var.cluster_version
 
