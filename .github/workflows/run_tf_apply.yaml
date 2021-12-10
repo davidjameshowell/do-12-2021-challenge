@@ -1,0 +1,26 @@
+name: Create terraform apply for Kubernetes cluster
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    name: Run an apply for a Digital Ocean Kubernets cluster
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Run Terraform apply
+        uses: dflook/terraform-apply@v1
+        with:
+          path: Terraform
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.DO_SPACES_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.DO_SPACES_AWS_SECRET_ACCESS_KEY }}
+          TF_VAR_do_token: ${{ secrets.DO_API_KEY }}
