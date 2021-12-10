@@ -23,11 +23,13 @@ jobs:
 
       - name: Save DigitalOcean kubeconfig with short-lived credentials
         id: gen-kube-config
-        run: echo "::set-output name=kubeconfig::$(doctl kubernetes cluster kubeconfig show --expiry-seconds 600 do-challenge-cluster | base64) > /dev/null 2>&1"
+        run: mkdir -p ~/.kube && echo $(doctl kubernetes cluster kubeconfig show --expiry-seconds 600 do-challenge-cluster) > ~/.kube/config 2>&1
+
+      - name: Download Kubectl and Helm
+        run: |
+          curl -LO "https://dl.k8s.io/release/v1.21.0/bin/linux/amd64/kubectl" -o kubectl
+          chmod +x kubectl
+          mv kubectl /usr/local/bin
 
       - name: Install Kyverno via Kubectl
-        uses: actions-hub/kubectl@master
-        env:
-          KUBE_CONFIG: ${{ steps.gen-kube-config.outputs.kubeconfig }}
-        with:
-          args: apply -f https://raw.githubusercontent.com/kyverno/kyverno/main/config/release/install.yaml
+        run: kubectl apply -f https://raw.githubusercontent.com/kyverno/kyverno/main/config/release/install.yaml
