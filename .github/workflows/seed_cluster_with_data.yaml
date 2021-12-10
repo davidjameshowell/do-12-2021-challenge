@@ -1,0 +1,35 @@
+name: Seed new cluster with example data
+
+on:
+  # push:
+  #   branches:
+  #     - main
+  workflow_dispatch:
+
+jobs:
+  install_kyverno:
+    runs-on: ubuntu-latest
+    name: Seed cluster with sample/example data for exercise
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DO_API_KEY }}
+
+      - name: Save DigitalOcean kubeconfig with short-lived credentials
+        id: gen-kube-config
+        run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 do-challenge-cluster
+
+      - name: Download Kubectl and Helm
+        run: |
+          curl -LO "https://dl.k8s.io/release/v1.21.0/bin/linux/amd64/kubectl" -o kubectl
+          chmod +x kubectl
+          mv kubectl /usr/local/bin
+
+      - name: Create namespaces 
+        run: kubectl create ns development finance facilities
