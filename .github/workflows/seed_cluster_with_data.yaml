@@ -32,4 +32,4 @@ jobs:
           mv kubectl /usr/local/bin
 
       - name: Create namespaces 
-        run: echo "development finance facilities" | xargs kubectl create ns
+        run: echo "development finance facilities" | xargs -I{} kubectl create ns {}
