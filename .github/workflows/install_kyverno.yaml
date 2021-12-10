@@ -1,0 +1,32 @@
+name: Install Kyverno into created cluster
+
+on:
+  # push:
+  #   branches:
+  #     - main
+  workflow_dispatch:
+
+jobs:
+  install_kyverno:
+    runs-on: ubuntu-latest
+    name: Install latest (main branch) Kyverno to cluster
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DO_API_KEY  }}
+
+      - name: Save DigitalOcean kubeconfig with short-lived credentials
+        run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 do-challenge-cluster
+
+      - name: Install Kyverno via Kubectl
+        uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+        with:
+          args: apply -f https://raw.githubusercontent.com/kyverno/kyverno/main/config/release/install.yaml
