@@ -31,5 +31,11 @@ jobs:
           chmod +x kubectl
           mv kubectl /usr/local/bin
 
-      - name: Create namespaces 
-        run: echo "development finance facilities" | xargs -I{} kubectl create ns {}
+      - name: Create namespace dev
+        run: kubectl create ns development
+
+      - name: Create namespace fin
+        run: kubectl create ns finance
+
+      - name: Create namespace fac
+        run: kubectl create ns facilities
